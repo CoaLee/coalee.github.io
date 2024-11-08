@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>60구절 암송 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        h2, h3 {
+            color: #4CAF50;
+        }
+        .setup-container {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+        .candidates-container, .test-container, .result-container, .feedback-container {
+            display: none;
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .candidate-item {
+            margin-bottom: 10px;
+        }
+
+        .result {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+            /* text-decoration: underline; */
+        }
+        .weak {
+            color: gray;
+        }
+
+        input, select, button, textarea {
+            padding: 8px;
+            margin: 5px 0;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        textarea {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h2, h3 {
+                font-size: 1.5em;
+            }
+            input, select, button, textarea {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <script>
+const versesChunk = `
+고린도후서 5:17
+새로운 삶 | 중심 되신 그리스도
+그런즉 누구든지 그리스도 안에 있으면 새로운 피조물이라 이전 것은 지나갔으니 보라 새것이 되었도다
+
+갈라디아서 2:20
+새로운 삶 | 중심 되신 그리스도
+내가 그리스도와 함께 십자가에 못 박혔나니 그런즉 이제는 내가 사는 것이 아니요 오직 내 안에 그리스도께서 사시는 것이라 이제 내가 육체 가운데 사는 것은 나를 사랑하사 나를 위하여 자기 자신을 버리신 하나님의 아들을 믿는 믿음 안에서 사는 것이라
+
+로마서 12:1
+새로운 삶 | 그리스도께 순종
+그러므로 형제들아 내가 하나님의 모든 자비하심으로 너희를 권하노니 너희 몸을 하나님이 기뻐하시는 거룩한 산 제물로 드리라 이는 너희가 드릴 영적 예배니라
+
+요한복음 14:21
+새로운 삶 | 그리스도께 순종
+나의 계명을 지키는 자라야 나를 사랑하는 자니 나를 사랑하는 자는 내 아버지께 사랑을 받을 것이요 나도 그를 사랑하여 그에게 나를 나타내리라
+
+디모데후서 3:16
+새로운 삶 | 말씀
+모든 성경은 하나님의 감동으로 된 것으로 교훈과 책망과 바르게 함과 의로 교육하기에 유익하니
+
+여호수아 1:8
+새로운 삶 | 말씀
+이 율법책을 네 입에서 떠나지 말게 하며 주야로 그것을 묵상하여 그 안에 기록된 대로 다 지켜 행하라 그리하면 네 길이 평탄하게 될 것이며 네가 형통하리라
+
+요한복음 15:7
+새로운 삶 | 기도
+너희가 내 안에 거하고 내 말이 너희 안에 거하면 무엇이든지 원하는대로 구하라 그리하면 이루리라
+
+빌립보서 4:6,7
+새로운 삶 | 기도
+아무것도 염려하지 말고 다만 모든 일에 기도와 간구로 너희 구할 것을 감사함으로 하나님께 아뢰라 그리하면 모든 지각에 뛰어난 하나님의 평강이 그리스도 예수 안에서 너희 마음과 생각을 지키시리라
+
+마태복음 18:20
+새로운 삶 | 교제
+두세 사람이 내 이름으로 모인 곳에는 나도 그들 중에 있느니라
+
+히브리서 10:24,25
+새로운 삶 | 교제
+서로 돌아보아 사랑과 선행을 격려하며 모이기를 폐하는 어떤 사람들의 습관과 같이 하지 말고 오직 권하여 그날이 가까움을 볼수록 더욱 그리하자
+
+마태복음 4:19
+새로운 삶 | 증거
+말씀하시되 나를 따라오라 내가 너희를 사람을 낚는 어부가 되게 하리라 하시니라
+
+로마서 1:16
+새로운 삶 | 증거
+내가 복음을 부끄러워하지 아니하노니 이 복음은 모든 믿는 자에게 구원을 주시는 하나님의 능력이 됨이라 먼저는 유대인에게요 그리고 헬라인에게로다
+
+로마서 3:23
+그리스도를 전파함 | 모든 사람이 죄를 범함
+모든 사람이 죄를 범하였으매 하나님의 영광에 이르지 못하더니
+
+이사야 53:6
+그리스도를 전파함 | 모든 사람이 죄를 범함
+우리는 다 양 같아서 그릇 행하여 각기 제 길로 갔거늘 여호와께서는 우리 모두의 죄악을 그에게 담당시키셨도다
+
+로마서 6:23
+그리스도를 전파함 | 죄와 형벌
+죄의 삯은 사망이요 하나님의 은사는 그리스도 예수 우리 주 안에 있는 영생이니라
+
+히브리서 9:27
+그리스도를 전파함 | 죄와 형벌
+한번 죽는 것은 사람에게 정해진 것이요 그 후에는 심판이 있으리니
+
+로마서 5:8
+그리스도를 전파함 | 그리스도께서 형벌을 받음
+우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에 대한 자기의 사랑을 확증하셨느니라
+
+베드로전서 3:18
+그리스도를 전파함 | 그리스도께서 형벌을 받음
+그리스도께서도 단번에 죄를 위하여 죽으사 의인으로서 불의한 자를 대신하셨으니 이는 우리를 하나님 앞으로 인도하려 하심이라 육체로는 죽임을 당하시고 영으로는 살리심을 받으셨으니
+
+에베소서 2:8,9
+그리스도를 전파함 | 선행으로 구원받지 못함
+너희는 그 은혜에 의하여 믿음으로 말미암아 구원을 받았으니 이것은 너희에게서 난 것이 아니요 하나님의 선물이라 행위에서 난 것이 아니니 이는 누구든지 자랑하지 못하게 함이라
+
+디도서 3:5
+그리스도를 전파함 | 선행으로 구원받지 못함
+우리를 구원하시되 우리가 행한 바 의로운 행위로 말미암지 아니하고 오직 그의 긍휼하심을 따라 중생의 씻음과 성령의 새롭게 하심으로 하셨나니
+
+요한복음 1:12
+그리스도를 전파함 | 그리스도를 모셔야 함
+영접하는 자 곧 그 이름을 믿는 자들에게는 하나님의 자녀가 되는 권세를 주셨으니
+
+요한계시록 3:20
+그리스도를 전파함 | 그리스도를 모셔야 함
+볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그와 더불어 먹고 그는 나와 더불어 먹으리라
+
+요한일서 5:13
+그리스도를 전파함 | 구원의 확신
+내가 하나님의 아들의 이름을 믿는 너희에게 이것을 쓰는 것은 너희로 하여금 너희에게 영생이 있음을 알게 하려 함이라
+
+요한복음 5:24
+그리스도를 전파함 | 구원의 확신
+내가 진실로 진실로 너희에게 이르노니 내 말을 듣고 또 나 보내신 이를 믿는 자는 영생을 얻었고 심판에 이르지 아니하나니 사망에서 생명으로 옮겼느니라
+
+고린도전서 3:16
+하나님을 의뢰함 | 성령
+너희는 너희가 하나님의 성전인 것과 하나님의 성령이 너희 안에 계시는 것을 알지 못하느냐
+
+고린도전서 2:12
+하나님을 의뢰함 | 성령
+우리가 세상의 영을 받지 아니하고 오직 하나님으로부터 온 영을 받았으니 이는 우리로 하여금 하나님께서 우리에게 은혜로 주신 것들을 알게 하려 하심이라
+
+이사야 41:10
+하나님을 의뢰함 | 능력
+두려워하지 말라 내가 너와 함께 함이라 놀라지 말라 나는 네 하나님이 됨이라 내가 너를 굳세게 하리라 참으로 내가 너를 도와주리라 참으로 내가 나의 의로운 오른손으로 너를 붙들리라
+
+빌립보서 4:13
+하나님을 의뢰함 | 능력
+내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라
+
+예레미야애가 3:22,23
+하나님을 의뢰함 | 성실
+여호와의 인자와 긍휼이 무궁하시므로 우리가 진멸되지 아니함이니이다 이것들이 아침마다 새로우니 주의 성실하심이 크시도소이다
+
+민수기 23:19
+여호와를 의뢰함 | 성실
+하나님은 사람이 아니시니 거짓말을 하지 않으시고 인생이 아니시니 후회가 없으시도다 어찌 그 말씀하신 바를 행하지 않으시며 하신 말씀을 실행하지 않으시랴
+
+이사야 26:3
+여호와를 의뢰함 | 평안
+주께서 심지가 견고한 자를 평강하고 평강하도록 지키시리니 이는 그가 주를 신뢰함이니이다
+
+베드로전서 5:7
+여호와를 의뢰함 | 평안
+너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라
+
+로마서 8:32
+여호와를 의뢰함 | 공급
+자기 아들을 아끼지 아니하시고 우리 모든 사람을 위하여 내주신 이가 어찌 그 아들과 함께 모든 것을 우리에게 주시지 아니하겠느냐
+
+빌립보서 4:19
+여호와를 의뢰함 | 공급
+나의 하나님이 그리스도 예수 안에서 영광 가운데 그 풍성한 대로 너희 모든 쓸 것을 채우시리라
+
+히브리서 2:18
+여호와를 의뢰함 | 유혹에서 도우심
+그가 시험을 받아 고난을 당하셨은즉 시험 받는 자들을 능히 도우실 수 있느니라
+
+시편 119:9,11
+여호와를 의뢰함 | 유혹에서 도우심
+청년이 무엇으로 그의 행실을 깨끗하게 하리이까 주의 말씀만 지킬 따름이니이다 내가 주께 범죄하지 아니하려 하여 주의 말씀을 내 마음에 두었나이다
+
+마태복음 6:33
+그리스도 제자의 자격 | 그리스도를 첫자리에 모심
+그런즉 너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라
+
+누가복음 9:23
+그리스도 제자의 자격 | 그리스도를 첫자리에 모심
+또 무리에게 이르시되 아무든지 나를 따라오려거든 자기를 부인하고 날마다 제 십자가를 지고 나를 따를 것이니라
+
+요한일서 2:15,16
+그리스도 제자의 자격 | 죄를 떠남
+이 세상이나 세상에 있는 것들을 사랑하지 말라 누구든지 이 세상을 사랑하면 아버지의 사랑이 그 안에 있지 아니하니 이는 세상에 있는 모든 것이 육신의 정욕과 안목의 정욕과 이생의 자랑이니 다 아버지께로부터 온 것이 아니요 세상으로부터 온 것이라
+
+로마서 12:2
+그리스도 제자의 자격 | 죄를 떠남
+너희는 이 세대를 본받지 말고 오직 마음을 새롭게 함으로 변화를 받아 하나님의 선하시고 기뻐하시고 온전하신 뜻이 무엇인지 분별하도록 하라
+
+고린도전서 15:58
+그리스도 제자의 자격 | 견고함
+그러므로 내 사랑하는 형제들아 견실하며 흔들리지 말고 항상 주의 일에 더욱 힘쓰는 자들이 되라 이는 너희 수고가 주 안에서 헛되지 않은 줄 앎이라
+
+히브리서 12:3
+그리스도 제자의 자격 | 견고함
+너희가 피곤하여 낙심하지 않기 위하여 죄인들이 이같이 자기에게 거역한 일을 참으신 이를 생각하라
+
+마가복음 10:45
+그리스도 제자의 자격 | 다른 사람을 섬김
+인자가 온 것은 섬김을 받으려 함이 아니라 도리어 섬기려 하고 자기 목숨을 많은 사람의 대속물로 주려 함이니라
+
+고린도후서 4:5
+그리스도 제자의 자격 | 다른 사람을 섬김
+우리는 우리를 전파하는 것이 아니라 오직 그리스도 예수의 주 되신 것과 또 예수를 위하여 우리가 너희의 종 된 것을 전파함이라
+
+잠언 3:9,10
+그리스도 제자의 자격 | 후히 드릴 것
+네 제물과 네 소산물의 처음 익은 열매로 여호와를 공경하라 그리하면 네 창고가 가득히 차고 네 포도즙 틀에 새 포도즙이 넘치리라
+
+고린도후서 9:6,7
+그리스도 제자의 자격 | 후히 드릴 것
+이것이 곧 적게 심는 자는 적게 거두고 많이 심는 자는 많이 거둔다 하는 말이로다 각각 그 마음에 정한 대로 할 것이요 인색함으로나 억지로 하지 말지니 하나님께서는 즐겨 내는 자를 사랑하시느니라
+
+사도행전 1:8
+그리스도 제자의 자격 | 세계비전
+오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅 끝까지 이르러 내 증인이 되리라 하시니라
+
+마태복음 28:19,20
+그리스도 제자의 자격 | 세계비전
+그러므로 너희는 가서 모든 민족을 제자로 삼아 아버지와 아들과 성령의 이름으로 세례를 베풀고 내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라 볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라 하시니라
+`;
+    </script>
+</head>
+<body>
+
+<h2>60구절 암송 테스트</h2>
+<div class="setup-container">
+    <h3>테스트 설정</h3>
+    <label>시작 번호</label>
+    <input type="number" id="beginIndex" min="1" placeholder="1">
+    <label>끝 번호</label>
+    <input type="number" id="endIndex" min="2" placeholder="끝 번호">
+    <label>문항 갯수</label>
+    <input type="number" id="numProblems" min="1" placeholder="">
+    <label>정답 비교</label>
+    <select id="testLevel">
+        <option value="easy">띄어쓰기 무시</option>
+        <option value="hard">띄어쓰기 포함</option>
+    </select>
+    <button onclick="startTest()">시작</button>
+    <button onclick="toggleCandidates()">구절 보기</button>
+</div>
+<div class="candidates-container">
+    <h3>말씀 구절</h3>
+    <div id="candidateList"></div>
+</div>
+
+<div class="test-container">
+    <h3>테스트 (<span id="currentIdx"></span>/<span id="totalCount"></span>)</h3>
+    <h4 class=""><span id="testAddress"></span></h4>
+    <label>분류</label>
+    <input type="text" id="userCategory">
+    <label>주제</label>
+    <input type="text" id="userSubject">
+    <label>구절</label>
+    <textarea id="userVerse"></textarea>
+    <button onclick="submitAnswer()">정답 확인</button>
+</div>
+
+<div class="feedback-container">
+    <h3>확인</h3>
+    <p id="feedback"></p>
+    <button onclick="loadNextProblem()">다음 문제</button>
+</div>
+
+<div class="result-container">
+    <h3>전체 결과</h3>
+    <p id="resultSummary"></p>
+    <div id="detailedResults"></div>
+</div>
+</body>
+<script>
+// Function to parse textChunk into candidate objects
+function parseCandidates(text) {
+    const candidates = [];
+    const problems = text.trim().split("\n\n"); // Split by double newlines to separate problems
+
+    problems.forEach(problem => {
+        const lines = problem.split("\n"); // Split each problem by line
+        if (lines.length === 3) {
+            const [address, categorySubject, verse] = lines;
+            const [category, subject] = categorySubject.split(" | "); // Split by " | " to get category and subject
+
+            // Create the candidate object
+            candidates.push({
+                address: address.trim(),
+                category: category.trim(),
+                subject: subject.trim(),
+                verse: verse.trim()
+            });
+        }
+    });
+
+    return candidates;
+}
+
+// Use the function to parse candidates
+const candidates = parseCandidates(versesChunk);
+
+document.getElementById("endIndex").placeholder = `${candidates.length}`;
+
+let testProblems = [];
+let currentProblemIndex = 0;
+let correctCount = 0;
+let testLevel = 'easy';
+
+// Function to start the test
+function startTest() {
+    const beginIndex = (parseInt(document.getElementById("beginIndex").value) - 1) || 0;
+    const endIndex = (parseInt(document.getElementById("endIndex").value) - 1) || candidates.length;
+    const numProblems = parseInt(document.getElementById("numProblems").value) || 1;
+    testLevel = document.getElementById("testLevel").value;
+
+    // Slice the array to get the range and shuffle it to ensure unique selection
+    const possibleProblems = candidates.slice(beginIndex, endIndex);
+
+    // Shuffle the array to randomize the order
+    for (let i = possibleProblems.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [possibleProblems[i], possibleProblems[j]] = [possibleProblems[j], possibleProblems[i]];
+    }
+
+    // Select the first numProblems items from the shuffled list
+    let totalCount = Math.min(numProblems, possibleProblems.length)
+    testProblems = possibleProblems.slice(0, totalCount);
+
+    currentProblemIndex = 0;
+    correctCount = 0;
+    document.querySelector(".setup-container").style.display = "none";
+    document.querySelector(".test-container").style.display = "block";
+    document.getElementById("totalCount").innerText = `${totalCount}`;
+    loadNextProblem();
+}
+
+// Load the next problem
+function loadNextProblem() {
+    if (currentProblemIndex < testProblems.length) {
+        const problem = testProblems[currentProblemIndex];
+        document.getElementById("currentIdx").innerText = `${currentProblemIndex + 1}`;
+        document.getElementById("testAddress").textContent = problem.address;
+        document.getElementById("userCategory").value = "";
+        document.getElementById("userSubject").value = "";
+        document.getElementById("userVerse").value = "";
+        document.querySelector(".feedback-container").style.display = "none";
+        document.querySelector(".test-container").style.display = "block";
+    } else {
+        document.querySelector(".feedback-container").style.display = "none";
+        showResults();
+    }
+}
+
+function highlightDifferences(correct, user) {
+    let highlightedResult = "";
+    let inMismatch = false;
+
+    // Iterate through each character in both the correct answer and user input
+    for (let i = 0, j = 0; i < correct.length || j < user.length; i++, j++) {
+        const correctChar = correct[i] || "";
+        const userChar = user[j] || "";
+
+        if (correctChar === userChar) {
+            // End mismatch section if we're back to matching characters
+            if (inMismatch) {
+                highlightedResult += '</span>';
+                inMismatch = false;
+            }
+            highlightedResult += `<span class="correct">${userChar}</span>`;
+        } else {
+            // Start a mismatch section if we're seeing different characters
+            if (!inMismatch) {
+                highlightedResult += '<span class="incorrect">';
+                inMismatch = true;
+            }
+            highlightedResult += `${userChar || " "}`;
+        }
+    }
+
+    // Close any remaining mismatch span
+    if (inMismatch) {
+        highlightedResult += '</span>';
+    }
+    
+    return highlightedResult;
+}
+
+// Function to submit an answer with character-level highlighting
+function submitAnswer() {
+    const problem = testProblems[currentProblemIndex];
+    const userCategory = document.getElementById("userCategory").value.trim();
+    const userSubject = document.getElementById("userSubject").value.trim();
+    const userVerse = document.getElementById("userVerse").value.trim();
+
+    // Check if answers are correct based on test level
+    const isCorrect = (answer, input) => {
+        return testLevel === "easy"
+            ? answer.replace(/\s+/g, '') === input.replace(/\s+/g, '')
+            : answer === input;
+    };
+
+    const correctCategory = isCorrect(problem.category, userCategory);
+    const correctSubject = isCorrect(problem.subject, userSubject);
+    const correctVerse = isCorrect(problem.verse, userVerse);
+
+    if (correctCategory && correctSubject && correctVerse) {
+        correctCount++;
+    }
+    const result = `
+        <h4>${problem.address}</h4>
+        분류: <span>${highlightDifferences(problem.category, userCategory)}</span><br>
+        (정답: ${problem.category})<br>
+        <br>
+        주제: <span>${highlightDifferences(problem.subject, userSubject)}</span><br>
+        (정답: ${problem.subject})<br>
+        <br>
+        구절: <span>${highlightDifferences(problem.verse, userVerse)}</span><br>
+        (정답: ${problem.verse})
+    `;
+    document.getElementById("feedback").innerHTML = result;
+
+    currentProblemIndex++;
+    document.querySelector(".test-container").style.display = "none";
+    document.querySelector(".feedback-container").style.display = "block";
+    
+    // Add result entry with character-level highlighting
+    const detailedResults = document.getElementById("detailedResults");
+    const resultDiv = document.createElement("div");
+    resultDiv.classList.add("result");
+
+    resultDiv.innerHTML = result
+    detailedResults.appendChild(resultDiv);
+}
+
+// move to the next problem after feedback
+function nextProblem() {
+    loadNextProblem();
+}
+
+// show results at the end of the test
+function showResults() {
+    document.querySelector(".test-container").style.display = "none";
+    document.querySelector(".result-container").style.display = "block";
+    document.getElementById("resultSummary").textcontent = `맞춘 갯수: ${correctCount} / ${testProblems.length}`;
+}
+
+function toggleCandidates() {
+    const candidateList = document.getElementById("candidateList");
+    const candidateContainer = document.querySelector(".candidates-container");
+    if (candidateContainer.style.display != "block") {
+        candidateList.innerHTML = candidates.map((candidate, index) => `
+            <div class="candidate-item">
+                <strong>${candidate.address}</strong> &nbsp;<span class="weak">(${candidate.category} | ${candidate.subject})</span><br>
+                ${candidate.verse}
+                <br>
+            </div>
+        `).join("");
+        candidateContainer.style.display = "block";
+    } else {
+        candidateContainer.style.display = "none";
+    }
+}
+</script>
+</html>
