@@ -276,6 +276,54 @@ const versesChunk = `
 마태복음 28:19,20
 그리스도 제자의 자격 | 세계비전
 그러므로 너희는 가서 모든 민족을 제자로 삼아 아버지와 아들과 성령의 이름으로 세례를 베풀고 내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라 볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라 하시니라
+
+요한복음 13:34,35
+그리스도를 닮아감 | 사랑
+새 계명을 너희에게 주노니 서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라 너희가 서로 사랑하면 이로써 모든 사람이 너희가 내 제자인 줄 알리라
+
+요한일서 3:18
+그리스도를 닮아감 | 사랑
+자녀들아 우리가 말과 혀로만 사랑하지 말고 행함과 진실함으로 하자
+
+빌립보서 2:3,4
+그리스도를 닮아감 | 겸손
+아무 일에든지 다툼이나 허영으로 하지 말고 오직 겸손한 마음으로 각각 자기보다 남을 낫게 여기고 각각 자기 일을 돌볼뿐더러 또한 각각 다른 사람들의 일을 돌보아 나의 기쁨을 충만하게 하라
+
+베드로전서 5:5,6
+그리스도를 닮아감 | 겸손
+젊은 자들아 이와 같이 장로들에게 순종하고 다 서로 겸손으로 허리를 동이라 하나님은 교만한 자를 대적하시되 겸손한 자들에게는 은혜를 주시느니라 그러므로 하나님의 능하신 손 아래에서 겸손하라 때가 되면 너희를 높이시리라
+
+에베소서 5:3
+그리스도를 닮아감 | 순결
+음행과 온갖 더러운 것과 탐욕은 너희 중에서 그 이름조차도 부르지 말라 이는 성도에게 마땅한 바니라
+
+베드로전서 2:11
+그리스도를 닮아감 | 순결
+사랑하는 자들의 거류민과 나그네 같은 너희를 권하노니 영혼을 거슬러 싸우는 육체의 정욕을 제어하라
+
+사도행전 24:16
+그리스도를 닮아감 | 정직
+이것으로 말미암아 나도 하나님과 사람에 대하여 항상 양심에 거리낌이 없기를 힘쓰나이다
+
+레위기 19:11
+그리스도를 닮아감 | 정직
+너희는 도둑질하지 말며 속이지 말며 서로 거짓말하지 말며
+
+히브리서 11:6
+그리스도를 닮아감 | 믿음
+믿음이 없이는 하나님을 기쁘시게 하지 못하나니 하나님께 나아가는 자는 반드시 그가 계신 것과 또한 그가 자기를 찾는 자들에게 상 주시는 이심을 믿어야 할지니라
+
+로마서 4:20,21
+그리스도를 닮아감 | 믿음
+믿음이 없어 하나님의 약속을 의심하지 않고 믿음으로 견고하여져서 하나님께 영광을 돌리며 약속하신 그것을 또한 능히 이루실 줄을 확신하였으니
+
+갈라디아서 6:9,10
+그리스도를 닮아감 | 선행
+우리가 선을 행하되 낙심하지 말지니 포기하지 아니하면 때가 이르매 거두리라 그러므로 우리는 기회 있는 대로 모든 이에게 착한 일을 하되 더욱 믿음의 가정들에게 할지니라
+
+마태복음 5:16
+그리스도를 닮아감 | 선행
+이같이 너희 빛이 사람 앞에 비치게 하여 그들로 너희 착한 행실을 보고 하늘에 계신 너희 아버지께 영광을 돌리게 하라
 `;
     </script>
 </head>
@@ -290,11 +338,6 @@ const versesChunk = `
     <input type="number" id="endIndex" min="2" placeholder="끝 번호">
     <label>문항 갯수</label>
     <input type="number" id="numProblems" min="1" placeholder="">
-    <label>정답 비교</label>
-    <select id="testLevel">
-        <option value="easy">띄어쓰기 무시</option>
-        <option value="hard">띄어쓰기 포함</option>
-    </select>
     <button onclick="startTest()">시작</button>
     <button onclick="toggleCandidates()">구절 보기</button>
 </div>
@@ -365,9 +408,8 @@ let testLevel = 'easy';
 // Function to start the test
 function startTest() {
     const beginIndex = (parseInt(document.getElementById("beginIndex").value) - 1) || 0;
-    const endIndex = (parseInt(document.getElementById("endIndex").value) - 1) || candidates.length;
+    const endIndex = (parseInt(document.getElementById("endIndex").value)) || candidates.length;
     const numProblems = parseInt(document.getElementById("numProblems").value) || 1;
-    testLevel = document.getElementById("testLevel").value;
 
     // Slice the array to get the range and shuffle it to ensure unique selection
     const possibleProblems = candidates.slice(beginIndex, endIndex);
@@ -413,6 +455,16 @@ function highlightDifferences(correct, user) {
 
     // Iterate through each character in both the correct answer and user input
     for (let i = 0, j = 0; i < correct.length || j < user.length; i++, j++) {
+        var userSpace = "";
+        if (testLevel === "easy") {
+            while (correct[i] === " ") {
+                i++;
+            }
+            while (user[j] === " ") {
+                j++;
+                userSpace += " ";
+            }
+        }
         const correctChar = correct[i] || "";
         const userChar = user[j] || "";
 
@@ -422,7 +474,7 @@ function highlightDifferences(correct, user) {
                 highlightedResult += '</span>';
                 inMismatch = false;
             }
-            highlightedResult += `<span class="correct">${userChar}</span>`;
+            highlightedResult += `<span class="correct">${userSpace}${userChar}</span>`;
         } else {
             // Start a mismatch section if we're seeing different characters
             if (!inMismatch) {
