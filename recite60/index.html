@@ -471,17 +471,15 @@ function highlightDifferences(correct, user) {
         if (correctChar === userChar) {
             // End mismatch section if we're back to matching characters
             if (inMismatch) {
-                highlightedResult += '</span>';
                 inMismatch = false;
             }
             highlightedResult += `<span class="correct">${userSpace}${userChar}</span>`;
         } else {
             // Start a mismatch section if we're seeing different characters
             if (!inMismatch) {
-                highlightedResult += '<span class="incorrect">';
                 inMismatch = true;
             }
-            highlightedResult += `${userChar || " "}`;
+            highlightedResult += `<span class="incorrect">${userSpace}${userChar}</span>`;
         }
     }
 
